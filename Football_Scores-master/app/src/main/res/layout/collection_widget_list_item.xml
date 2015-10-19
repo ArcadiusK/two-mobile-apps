@@ -4,15 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:elevation="4dp"
-              android:background="@drawable/list_item">
+              android:background="#232323">
 
     <include layout="@layout/scores_item_core"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/details_fragment_container">
-    </FrameLayout>
 </LinearLayout>
-
-

@@ -28,13 +28,14 @@ public class ScoresProvider extends ContentProvider
             DatabaseContract.scores_table.MATCH_ID + " = ?";
 
 
-    static UriMatcher buildUriMatcher() {
+    static UriMatcher buildUriMatcher()
+    {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = DatabaseContract.BASE_CONTENT_URI.toString();
-        matcher.addURI(authority, null , MATCHES);
-        matcher.addURI(authority, "league" , MATCHES_WITH_LEAGUE);
-        matcher.addURI(authority, "id" , MATCHES_WITH_ID);
-        matcher.addURI(authority, "date" , MATCHES_WITH_DATE);
+        matcher.addURI(authority, null, MATCHES);
+        matcher.addURI(authority, "league", MATCHES_WITH_LEAGUE);
+        matcher.addURI(authority, "id", MATCHES_WITH_ID);
+        matcher.addURI(authority, "date", MATCHES_WITH_DATE);
         return matcher;
     }
 
@@ -42,25 +43,23 @@ public class ScoresProvider extends ContentProvider
     {
         String link = uri.toString();
         {
-           if(link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString()))
-           {
-               return MATCHES;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithDate().toString()))
-           {
-               return MATCHES_WITH_DATE;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithId().toString()))
-           {
-               return MATCHES_WITH_ID;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithLeague().toString()))
-           {
-               return MATCHES_WITH_LEAGUE;
-           }
+            if (link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString()))
+            {
+                return MATCHES;
+            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithDate().toString()))
+            {
+                return MATCHES_WITH_DATE;
+            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithId().toString()))
+            {
+                return MATCHES_WITH_ID;
+            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithLeague().toString()))
+            {
+                return MATCHES_WITH_LEAGUE;
+            }
         }
         return -1;
     }
+
     @Override
     public boolean onCreate()
     {
@@ -78,7 +77,8 @@ public class ScoresProvider extends ContentProvider
     public String getType(Uri uri)
     {
         final int match = muriMatcher.match(uri);
-        switch (match) {
+        switch (match)
+        {
             case MATCHES:
                 return DatabaseContract.scores_table.CONTENT_TYPE;
             case MATCHES_WITH_LEAGUE:
@@ -88,7 +88,7 @@ public class ScoresProvider extends ContentProvider
             case MATCHES_WITH_DATE:
                 return DatabaseContract.scores_table.CONTENT_TYPE;
             default:
-                throw new UnsupportedOperationException("Unknown uri :" + uri );
+                throw new UnsupportedOperationException("Unknown uri :" + uri);
         }
     }
 
@@ -103,29 +103,38 @@ public class ScoresProvider extends ContentProvider
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(match));
         switch (match)
         {
-            case MATCHES: retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection,null,null,null,null,sortOrder); break;
+            case MATCHES:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, null, null, null, null, sortOrder);
+                break;
             case MATCHES_WITH_DATE:
-                    //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[1]);
-                    //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[2]);
-                    retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_DATE,selectionArgs,null,null,sortOrder); break;
-            case MATCHES_WITH_ID: retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_ID,selectionArgs,null,null,sortOrder); break;
-            case MATCHES_WITH_LEAGUE: retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_LEAGUE,selectionArgs,null,null,sortOrder); break;
-            default: throw new UnsupportedOperationException("Unknown Uri" + uri);
+                //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[1]);
+                //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[2]);
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, SCORES_BY_DATE, selectionArgs, null, null, sortOrder);
+                break;
+            case MATCHES_WITH_ID:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, SCORES_BY_ID, selectionArgs, null, null, sortOrder);
+                break;
+            case MATCHES_WITH_LEAGUE:
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, SCORES_BY_LEAGUE, selectionArgs, null, null, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri" + uri);
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(Uri uri, ContentValues values)
+    {
 
         return null;
     }
@@ -143,7 +152,7 @@ public class ScoresProvider extends ContentProvider
                 int returncount = 0;
                 try
                 {
-                    for(ContentValues value : values)
+                    for (ContentValues value : values)
                     {
                         long _id = db.insertWithOnConflict(DatabaseContract.SCORES_TABLE, null, value,
                                 SQLiteDatabase.CONFLICT_REPLACE);
@@ -153,18 +162,20 @@ public class ScoresProvider extends ContentProvider
                         }
                     }
                     db.setTransactionSuccessful();
-                } finally {
+                } finally
+                {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri,null);
+                getContext().getContentResolver().notifyChange(uri, null);
                 return returncount;
             default:
-                return super.bulkInsert(uri,values);
+                return super.bulkInsert(uri, values);
         }
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(Uri uri, String selection, String[] selectionArgs)
+    {
         return 0;
     }
 }
